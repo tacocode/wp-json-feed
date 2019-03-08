@@ -1,0 +1,17 @@
+.et_social_networks {
+    display: none;
+}
+
+#posts {
+    margin: 25px;
+}
+
+.post {
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #333;
+}
+
+.post h1:first-of-type {
+    display: none;
+}
