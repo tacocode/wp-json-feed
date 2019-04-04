@@ -1,3 +1,4 @@
 /wp-plugin-deploy.sh
 /fix-css-classes.sh
 /.idea
+/debug_curl.txt

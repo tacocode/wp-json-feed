@@ -3,7 +3,7 @@
 Plugin Name: WP JSON Feed
 Plugin URI:  https://github.com/tacocode/wp-json-feed
 Description: Add a custom JSON feed
-Version:     0.0.1
+Version:     0.0.2
 Author:      TacoCode
 Author URI:  https://github.com/tacocode
 License:     GPL2
@@ -11,6 +11,8 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: wp-json-feed
 Domain Path: /languages
 */
+
+namespace TacoCode\WordPress\Plugins\WPJSONFeed;
 
 /**
  * Class WPJSONFeed
@@ -52,7 +54,6 @@ class WPJSONFeed
      */
     public function optionsPageTemplate()
     {
-        // check user capabilities
         if (!current_user_can('manage_options')) {
             return;
         }
@@ -135,7 +136,6 @@ class WPJSONFeed
         <input type="radio" name="display_content" value="content" <?php checked('content', $option, true); ?>> Full
         <input type="radio" name="display_content" value="excerpt" <?php checked('excerpt', $option, true); ?>> Excerpt
         <?php
-
     }
 
 
@@ -156,10 +156,12 @@ class WPJSONFeed
     {
         $attributes = shortcode_atts(array(
             'url' => null,
+            'categories' => null,
             'replace' => null,
         ), $atts);
 
-        $url = $attributes['url'] . (parse_url($attributes['url'], PHP_URL_QUERY) ? '&' : '?') . 'callback=?';
+        $categories = empty($attributes['categories']) ? '' : 'categories=' . $attributes['categories'];
+        $url = $attributes['url'] . (parse_url($attributes['url'], PHP_URL_QUERY) ? '&' : '?') . $categories;
 
         $display_content = get_option('display_content');
         $display_content = empty($display_content) ? 'content' : $display_content;
@@ -212,8 +214,15 @@ class WPJSONFeed
     private function get($uri)
     {
         $result = false;
-
         $ch = curl_init();
+
+        if (WP_DEBUG) {
+            $fp = fopen(dirname(__FILE__).'/debug_curl.txt', 'w');
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_VERBOSE, true);
+            curl_setopt($ch, CURLOPT_STDERR, $fp);
+        }
+
         curl_setopt($ch, CURLOPT_URL, $uri);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
@@ -238,7 +247,8 @@ class WPJSONFeed
      *
      * @return string|string[]|null
      */
-    private function replace($string, $regex) {
+    private function replace($string, $regex)
+    {
         return preg_replace('%' . $regex . '%i', '', $string);
     }
 }
