@@ -9,7 +9,8 @@ jQuery(document).ready(function($) {
         data: {
             action: 'wp_json_feed',
             url: '<?php echo $url ?>',
-            replace: '<?php echo $attributes['replace']; ?>'
+            replace: '<?php echo $attributes['replace']; ?>',
+            callback: '?'
         },
         success: function (response) {
             $('.indicator').remove();

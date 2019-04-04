@@ -25,10 +25,14 @@ Found a bug? Please use the issue tracker at <https://github.com/tacocode/wp-jso
 
 ## Changelog 
 
+### 0.0.2
+* Fix code formatting
+* Add 'categories' shortcode parameter
+
 ### 0.0.1
 * Initial version
 
 ## Usage 
 
 1. Navigate to 'Tools > WP JSON Feed' to change the settings
-2. Shortcode: [wp_json_feed url="https://mywordpresssite.com/wp-json/wp/v2/posts"]
+2. Shortcode: [wp_json_feed url="https://mywordpresssite.com/wp-json/wp/v2/posts" categories="1"]
