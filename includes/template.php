@@ -28,13 +28,25 @@ jQuery(document).ready(function($) {
 
     function displayResult(data) {
         let limit = parseInt(<?php echo $limit_content; ?>);
-        $.each(JSON.parse(data), function(index, item) {
+        $.each(data, function(index, item) {
             let content = item.<?php echo $display_content; ?>.rendered;
             let output = (limit > 0) ? content.substring(0, limit) + '...' : content;
 
+            let featured_image = '';
+            let display_featured_image = <?php echo (bool)$attributes['featured_image']; ?>;
+            if (display_featured_image && item.jetpack_featured_media_url) {
+                featured_image = '<div class="featured_image">' +
+                '<img src="' + item.jetpack_featured_media_url + '" alt="Post Image" style="height:auto;width:100%;">' +
+                '</div>'
+            }
+
             let post = $('<div class="post" id="' + item.id + '"><h3 class="post-title"><a href="' +
-                item.link + '">' + item.title.rendered + '</a></h3><div class="post-content">' +
-                output + '</div></div>');
+                item.link + '">' + item.title.rendered + '</a></h3>' + featured_image +
+                '<div class="post-content">' + output + '</div></div>');
+
+            // Remove additional unneeded elements
+            post.find('div.et_social_networks').remove();
+
             $('#wp_json_feed_posts').append(post);
         });
     }

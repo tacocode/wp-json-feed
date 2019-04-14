@@ -158,6 +158,8 @@ class WPJSONFeed
             'url' => null,
             'categories' => null,
             'replace' => null,
+            'featured_image' => false,
+            'excerpt_only' => false,
         ), $atts);
 
         $categories = empty($attributes['categories']) ? '' : 'categories=' . $attributes['categories'];
@@ -165,6 +167,7 @@ class WPJSONFeed
 
         $display_content = get_option('display_content');
         $display_content = empty($display_content) ? 'content' : $display_content;
+        $display_content = (bool)$attributes['excerpt_only'] ? 'excerpt' : $display_content;
 
         $limit_content = get_option('limit_content');
         $limit_content = empty($limit_content) ? 0 : $limit_content;
@@ -192,9 +195,10 @@ class WPJSONFeed
         }
 
         $response = $this->replace($response, "\[(\\\?)\/?et_pb_(text|column|row)?.*?\]");
+        $response = $this->replace($response, "\[monarch_share\]");
 
         wp_send_json_success(array(
-            'json' => $response
+            'json' => json_decode($response)
         ));
     }
 
